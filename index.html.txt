@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Vattenmål App</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+</head>
+<body>
+  <div class="container">
+    <h1>Vattenmål för dagen</h1>
+    <label for="goalInput">Sätt ditt mål (ml):</label>
+    <input type="number" id="goalInput" min="0" placeholder="Ex. 2000" />
+    <button id="setGoalBtn">Sätt mål</button>
+
+    <h2>Hur mycket har du druckit?</h2>
+    <input type="number" id="intakeInput" min="0" placeholder="Ex. 250" />
+    <button id="addIntakeBtn">Lägg till</button>
+
+    <div class="progress-bar">
+      <div id="progressFill"></div>
+    </div>
+    <p id="statusText"></p>
+
+    <h3>Inställningar</h3>
+    <label for="themeSelect">Tema:</label>
+    <select id="themeSelect">
+      <option value="light">Ljust</option>
+      <option value="dark">Mörkt</option>
+    </select>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
