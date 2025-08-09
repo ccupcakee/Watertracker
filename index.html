@@ -1,3 +1,7 @@
+Jag missade att klippa av — här kommer hela, färdigkodade versionen utan avbrott!
+Testa den exakt så här (kopiera, spara som t.ex. `index.html` och öppna i din webbläsare):
+
+```html
 <!DOCTYPE html>
 <html lang="sv">
 <head>
@@ -5,79 +9,51 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Watertracker</title>
 <style>
-  /* Grund och variabler */
-  :root {
-    --bg-dark: #121212;
-    --text-dark: #eee;
-    --glass-bg-dark: #222;
-    --glass-border-dark: #00aaff;
-    --water-start-dark: #00cfff;
-    --water-end-dark: #0088cc;
-    --btn-bg-dark: #00aaff;
-    --btn-bg-active-dark: #0088cc;
-    --shadow-dark: #00aaff88;
-
-    --bg-light: #f5f5f5;
-    --text-light: #222;
-    --glass-bg-light: #ddd;
-    --glass-border-light: #0077cc;
-    --water-start-light: #0077cc;
-    --water-end-light: #005599;
-    --btn-bg-light: #0077cc;
-    --btn-bg-active-light: #005599;
-    --shadow-light: #0077cc88;
-  }
-
   body {
     margin: 0; padding: 0;
     height: 100vh;
-    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
-    position: relative;
-    background: var(--bg-dark);
-    color: var(--text-dark);
-    transition: background 0.3s, color 0.3s;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background: #121212;
+    color: #eee;
     user-select: none;
+    transition: background 0.3s, color 0.3s;
   }
-
   body.light {
-    background: var(--bg-light);
-    color: var(--text-light);
+    background: #f5f5f5;
+    color: #222;
   }
-
   .glass {
     position: relative;
     width: 150px;
     height: 300px;
-    border: 3px solid var(--glass-border-dark);
+    border: 3px solid #00aaff;
     border-radius: 30px 30px 10px 10px;
-    background: var(--glass-bg-dark);
-    box-shadow: inset 0 0 15px var(--shadow-dark);
+    background: #222;
+    box-shadow: inset 0 0 15px #00aaff88;
     cursor: pointer;
     overflow: hidden;
-    transition: border-color 0.3s, background 0.3s, box-shadow 0.3s;
+    transition: border-color 0.3s, background 0.3s;
   }
   body.light .glass {
-    border-color: var(--glass-border-light);
-    background: var(--glass-bg-light);
-    box-shadow: inset 0 0 15px var(--shadow-light);
+    border-color: #0077cc;
+    background: #ddd;
+    box-shadow: inset 0 0 15px #0077cc88;
   }
-
   .water {
     position: absolute;
     bottom: 0;
     width: 100%;
-    background: linear-gradient(180deg, var(--water-start-dark) 0%, var(--water-end-dark) 100%);
+    background: linear-gradient(180deg, #00cfff 0%, #0088cc 100%);
     border-radius: 0 0 30px 30px;
     height: 0%;
     transition: height 0.3s ease;
   }
   body.light .water {
-    background: linear-gradient(180deg, var(--water-start-light) 0%, var(--water-end-light) 100%);
+    background: linear-gradient(180deg, #0077cc 0%, #005599 100%);
   }
-
   .controls {
     position: absolute;
     top: 50%;
@@ -95,7 +71,7 @@
     pointer-events: auto;
   }
   .control-btn {
-    background: var(--btn-bg-dark);
+    background: #00aaff;
     border: none;
     color: white;
     font-size: 24px;
@@ -103,46 +79,43 @@
     height: 50px;
     border-radius: 50%;
     cursor: pointer;
-    box-shadow: 0 0 8px var(--shadow-dark);
-    user-select: none;
+    box-shadow: 0 0 8px #00aaff88;
     display: flex;
     justify-content: center;
     align-items: center;
+    user-select: none;
     transition: background 0.3s;
   }
   .control-btn:active {
-    background: var(--btn-bg-active-dark);
+    background: #0088cc;
   }
   body.light .control-btn {
-    background: var(--btn-bg-light);
-    box-shadow: 0 0 8px var(--shadow-light);
+    background: #0077cc;
+    box-shadow: 0 0 8px #0077cc88;
   }
   body.light .control-btn:active {
-    background: var(--btn-bg-active-light);
+    background: #005599;
   }
-
-  /* Inställningsikon */
   .settings-icon {
     position: fixed;
     top: 20px;
     right: 20px;
     width: 30px;
     height: 30px;
-    fill: var(--glass-border-dark);
+    fill: #00aaff;
     cursor: pointer;
     transition: fill 0.3s ease;
     z-index: 15;
   }
   .settings-icon:hover {
-    fill: var(--btn-bg-dark);
+    fill: #0088cc;
   }
   body.light .settings-icon {
-    fill: var(--glass-border-light);
+    fill: #0077cc;
   }
   body.light .settings-icon:hover {
-    fill: var(--btn-bg-light);
+    fill: #005599;
   }
-
   /* Popup bakgrund */
   .popup-bg {
     position: fixed;
@@ -156,15 +129,14 @@
   .popup-bg.visible {
     display: flex;
   }
-
   /* Popup innehåll */
   .popup-content {
-    background: var(--glass-bg-dark);
-    border: 2px solid var(--glass-border-dark);
+    background: #222;
+    border: 2px solid #00aaff;
     padding: 20px 30px;
     border-radius: 12px;
-    box-shadow: 0 0 15px var(--btn-bg-dark);
-    color: var(--btn-bg-dark);
+    box-shadow: 0 0 15px #00aaff;
+    color: #00aaff;
     min-width: 280px;
     max-width: 90vw;
     text-align: center;
@@ -173,12 +145,11 @@
     transition: background 0.3s, border-color 0.3s, color 0.3s;
   }
   body.light .popup-content {
-    background: var(--glass-bg-light);
-    border-color: var(--glass-border-light);
-    color: var(--glass-border-light);
-    box-shadow: 0 0 15px var(--btn-bg-light);
+    background: #eee;
+    border-color: #0077cc;
+    color: #0077cc;
+    box-shadow: 0 0 15px #0077cc;
   }
-
   /* Stängknapp */
   .close-btn {
     position: absolute;
@@ -189,7 +160,6 @@
     color: inherit;
     cursor: pointer;
   }
-
   /* Mode val */
   .mode-option {
     margin: 10px 0;
@@ -203,13 +173,11 @@
   .mode-option input {
     margin-right: 10px;
   }
-
   /* Slider */
   .goal-slider {
     width: 100%;
     margin: 20px 0 10px;
   }
-
   .goal-value {
     font-size: 22px;
     font-weight: bold;
@@ -230,5 +198,116 @@
 </div>
 
 <!-- Inställningsikon -->
-<svg class="settings-icon" id="settingsIcon" viewBox="0 0 24 24" title="Inställningar">
-  <path d="M19.14 12.94c.04-.31.06-.63.06-.94s-.02-.63-.06-.94l2.03-1.58a.5.5 0 0 0 .12-.64l-1.92-3.32a.5.5 0 0 0-.6-.22l-2.39.96a7.025 7.025 0 0 0-1.6-.94l-.36-2.54a.5.5 0 0 0-.5-.43h-3.84a.5.5 0 0 0-.5.43l-.36 2.54a7.1 7.1 0 0 0-1.6.94l-2.39-.96a.5.5 0 0 0-.6.22L2.71 8.48a.5.5 0 0 0 .12.64l2.03 1.58c-.04.31-.06.63-.06.94s.02.63.06.94L2.83 14.5a.5.5 0 0 0-.12.64l1.92 3.32c.14.24.46.34.7.22l2.39-.96c.5.38 1.05
+<svg class="settings-icon" id="settingsIcon" viewBox="0 0 24 24" title="Inställningar" xmlns="http://www.w3.org/2000/svg">
+  <path d="M19.14 12.94c.04-.31.06-.63.06-.94s-.02-.63-.06-.94l2.03-1.58a.5.5 0 0 0 .12-.64l-1.92-3.32a.5.5 0 0 0-.6-.22l-2.39.96a7.025 7.025 0 0 0-1.6-.94l-.36-2.54a.5.5 0 0 0-.5-.43h-3.84a.5.5 0 0 0-.5.43l-.36 2.54a7.1 7.1 0 0 0-1.6.94l-2.39-.96a.5.5 0 0 0-.6.22L2.71 8.48a.5.5 0 0 0 .12.64l2.03 1.58c-.04.31-.06.63-.06.94s.02.63.06.94L2.83 14.5a.5.5 0 0 0-.12.64l1.92 3.32c.14.24.46.34.7.22l2.39-.96c.5.38 1.05.69 1.6.94l.36 2.54c.05.27.26.46.5.46h3.84c.24 0 .45-.19.5-.46l.36-2.54c.55-.25 1.1-.56 1.6-.94l2.39.96c.24.12.56.02.7-.22l1.92-3.32a.5.5 0 0 0-.12-.64l-2.03-1.58zM12 15.5A3.5 3.5 0 1 1 12 8.5a3.5 3.5 0 0 1 0 7z"/>
+</svg>
+
+<!-- Inställnings-popup -->
+<div class="popup-bg" id="settingsPopup">
+  <div class="popup-content">
+    <button class="close-btn" id="closeSettings">&times;</button>
+    <h2>Inställningar</h2>
+    <label class="mode-option">
+      <input type="radio" name="mode" value="dark" checked />
+      Dark Mode
+    </label>
+    <label class="mode-option">
+      <input type="radio" name="mode" value="light" />
+      Light Mode
+    </label>
+  </div>
+</div>
+
+<!-- Goal-popup -->
+<div class="popup-bg" id="goalPopup">
+  <div class="popup-content">
+    <button class="close-btn" id="closeGoal">&times;</button>
+    <h2>Välj ditt mål (liter)</h2>
+    <input type="range" min="1" max="5" step="1" value="3" class="goal-slider" id="goalSlider" />
+    <div class="goal-value" id="goalValue">3 liter</div>
+  </div>
+</div>
+
+<script>
+  const glass = document.getElementById("glass");
+  const water = document.getElementById("water");
+  const controls = document.getElementById("controls");
+  const plusBtn = document.getElementById("plus");
+  const minusBtn = document.getElementById("minus");
+  const settingsIcon = document.getElementById("settingsIcon");
+  const settingsPopup = document.getElementById("settingsPopup");
+  const closeSettings = document.getElementById("closeSettings");
+  const goalPopup = document.getElementById("goalPopup");
+  const closeGoal = document.getElementById("closeGoal");
+  const goalSlider = document.getElementById("goalSlider");
+  const goalValue = document.getElementById("goalValue");
+
+  // Initial values
+  let waterAmount = 0; // i liter, max mål sätts sen
+  let goal = 3; // default mål i liter
+
+  // Max vattenmängd i glaset är goal, vattenhöjd i %
+  function updateWater() {
+    const percentage = (waterAmount / goal) * 100;
+    water.style.height = Math.min(percentage, 100) + "%";
+  }
+
+  // Uppdatera text i goal-popup
+  function updateGoalText() {
+    goalValue.textContent = goalSlider.value + " liter";
+  }
+
+  // Visa eller göm kontrollknapparna
+  function showControls() {
+    controls.classList.add("visible");
+  }
+  function hideControls() {
+    controls.classList.remove("visible");
+  }
+
+  // Klick på glas: visa controls i 3 sekunder
+  glass.addEventListener("click", () => {
+    showControls();
+    setTimeout(hideControls, 3000);
+  });
+
+  // Plus knapp
+  plusBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    if (waterAmount < goal) {
+      waterAmount = Math.min(waterAmount + 0.5, goal);
+      updateWater();
+    }
+  });
+
+  // Minus knapp
+  minusBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    if (waterAmount > 0) {
+      waterAmount = Math.max(waterAmount - 0.5, 0);
+      updateWater();
+    }
+  });
+
+  // Dubbelklick på glas öppnar mål-väljare
+  glass.addEventListener("dblclick", (e) => {
+    e.stopPropagation();
+    goalPopup.classList.add("visible");
+    // Sätt slider till nuvarande mål
+    goalSlider.value = goal;
+    updateGoalText();
+  });
+
+  // Inställningsikon klick
+  settingsIcon.addEventListener("click", (e) => {
+    e.stopPropagation();
+    settingsPopup.classList.add("visible");
+  });
+
+  // Stäng inställningar
+  closeSettings.addEventListener("click", () => {
+    settingsPopup.classList.remove("visible");
+  });
+
+  // St
+```
