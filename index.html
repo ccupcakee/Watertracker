@@ -5,18 +5,49 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Watertracker</title>
 <style>
-  /* Reset & grund */
+  /* Grundinställningar */
   body, html {
     margin: 0; padding: 0;
     height: 100%;
-    background: #121212;
-    color: #eee;
     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
     position: relative;
     overflow: hidden;
+    background: var(--bg-color);
+    color: var(--text-color);
+    transition: background 0.3s ease, color 0.3s ease;
+  }
+
+  /* Light och dark mode variabler */
+  :root {
+    --bg-color: #121212;
+    --text-color: #eee;
+    --glass-bg: #222;
+    --glass-border: #00aaff;
+    --water-gradient-start: #00cfff;
+    --water-gradient-end: #0088cc;
+    --btn-bg: #00aaff;
+    --btn-bg-active: #0088cc;
+    --shadow-color: #00aaff88;
+    --settings-fill: #00aaff;
+    --popup-bg: #222;
+    --popup-border: #00aaff;
+  }
+  body.light {
+    --bg-color: #f5f5f5;
+    --text-color: #222;
+    --glass-bg: #ddd;
+    --glass-border: #0077cc;
+    --water-gradient-start: #0077cc;
+    --water-gradient-end: #005599;
+    --btn-bg: #0077cc;
+    --btn-bg-active: #005599;
+    --shadow-color: #0077cc88;
+    --settings-fill: #0077cc;
+    --popup-bg: #eee;
+    --popup-border: #0077cc;
   }
 
   /* Glaset */
@@ -24,10 +55,10 @@
     position: relative;
     width: 150px;
     height: 300px;
-    border: 3px solid #00aaff;
+    border: 3px solid var(--glass-border);
     border-radius: 30px 30px 10px 10px;
-    background: #222;
-    box-shadow: inset 0 0 15px #00aaff44;
+    background: var(--glass-bg);
+    box-shadow: inset 0 0 15px var(--shadow-color);
     cursor: pointer;
     overflow: hidden;
   }
@@ -37,7 +68,7 @@
     position: absolute;
     bottom: 0;
     width: 100%;
-    background: linear-gradient(180deg, #00cfff 0%, #0088cc 100%);
+    background: linear-gradient(180deg, var(--water-gradient-start) 0%, var(--water-gradient-end) 100%);
     border-radius: 0 0 30px 30px;
     transition: height 0.3s ease;
   }
@@ -49,13 +80,13 @@
     right: 20px;
     width: 30px;
     height: 30px;
-    fill: #00aaff;
+    fill: var(--settings-fill);
     cursor: pointer;
     transition: fill 0.3s ease;
+    z-index: 110;
   }
-
   .settings-icon:hover {
-    fill: #00ddff;
+    fill: var(--btn-bg);
   }
 
   /* Kontrollknappar (+ och -) */
@@ -69,15 +100,14 @@
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.3s ease;
+    z-index: 100;
   }
-
   .controls.visible {
     opacity: 1;
     pointer-events: auto;
   }
-
   .control-btn {
-    background: #00aaff;
+    background: var(--btn-bg);
     border: none;
     color: white;
     font-size: 24px;
@@ -85,33 +115,75 @@
     height: 50px;
     border-radius: 50%;
     cursor: pointer;
-    box-shadow: 0 0 8px #00aaff88;
+    box-shadow: 0 0 8px var(--shadow-color);
     user-select: none;
     display: flex;
     justify-content: center;
     align-items: center;
   }
-
   .control-btn:active {
-    background: #0088cc;
+    background: var(--btn-bg-active);
   }
 
-  /* Dagens mål-popup */
-  .goal-popup {
+  /* Popups */
+  .popup-bg {
     position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: #222;
-    border: 2px solid #00aaff;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.6);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 120;
+  }
+  .popup-bg.visible {
+    display: flex;
+  }
+
+  /* Popup innehåll */
+  .popup-content {
+    background: var(--popup-bg);
+    border: 2px solid var(--popup-border);
     padding: 20px 30px;
     border-radius: 12px;
-    box-shadow: 0 0 15px #00aaffaa;
-    color: #00aaff;
+    box-shadow: 0 0 15px var(--popup-border);
+    color: var(--btn-bg);
+    min-width: 280px;
+    max-width: 90vw;
+    text-align: center;
+    position: relative;
+  }
+
+  /* Stäng-knapp */
+  .close-btn {
+    position: absolute;
+    top: 10px; right: 10px;
+    background: transparent;
+    border: none;
+    font-size: 20px;
+    color: var(--btn-bg);
+    cursor: pointer;
+  }
+
+  /* Mode-val */
+  .mode-option {
+    margin: 10px 0;
     font-size: 18px;
-    display: none;
+    cursor: pointer;
     user-select: none;
-    z-index: 100;
+  }
+  .mode-option input {
+    margin-right: 10px;
+  }
+
+  /* Slider */
+  .goal-slider {
+    width: 100%;
+    margin: 20px 0 10px;
+  }
+
+  .goal-value {
+    font-size: 22px;
+    font-weight: bold;
   }
 </style>
 </head>
@@ -128,85 +200,30 @@
   </div>
 </div>
 
-<!-- Inställningsikon (kugghjul) -->
-<svg class="settings-icon" viewBox="0 0 24 24" title="Inställningar">
+<!-- Inställningsikon -->
+<svg class="settings-icon" id="settingsIcon" viewBox="0 0 24 24" title="Inställningar">
   <path d="M19.14 12.94c.04-.31.06-.63.06-.94s-.02-.63-.06-.94l2.03-1.58a.5.5 0 0 0 .12-.64l-1.92-3.32a.5.5 0 0 0-.6-.22l-2.39.96a7.025 7.025 0 0 0-1.6-.94l-.36-2.54a.5.5 0 0 0-.5-.43h-3.84a.5.5 0 0 0-.5.43l-.36 2.54a7.1 7.1 0 0 0-1.6.94l-2.39-.96a.5.5 0 0 0-.6.22L2.71 8.48a.5.5 0 0 0 .12.64l2.03 1.58c-.04.31-.06.63-.06.94s.02.63.06.94L2.83 14.5a.5.5 0 0 0-.12.64l1.92 3.32c.14.24.46.34.7.22l2.39-.96c.5.38 1.05.69 1.6.94l.36 2.54c.05.27.26.46.5.46h3.84c.24 0 .45-.19.5-.46l.36-2.54c.55-.25 1.1-.56 1.6-.94l2.39.96c.24.12.56.02.7-.22l1.92-3.32a.5.5 0 0 0-.12-.64l-2.03-1.58zM12 15.5A3.5 3.5 0 1 1 12 8.5a3.5 3.5 0 0 1 0 7z"/>
 </svg>
 
-<!-- Dagens mål popup -->
-<div class="goal-popup" id="goalPopup">
-  <p>Dagens mål: <span id="goalAmount">2</span> liter</p>
-  <button id="closeGoal" style="margin-top: 10px; padding: 5px 10px; cursor:pointer;">Stäng</button>
+<!-- Settings popup -->
+<div class="popup-bg" id="settingsPopup">
+  <div class="popup-content">
+    <button class="close-btn" id="closeSettings">&times;</button>
+    <h2>Inställningar</h2>
+    <label class="mode-option">
+      <input type="radio" name="mode" value="dark" checked />
+      Dark Mode
+    </label>
+    <label class="mode-option">
+      <input type="radio" name="mode" value="light" />
+      Light Mode
+    </label>
+  </div>
 </div>
 
-<script>
-  const glass = document.getElementById('glass');
-  const water = document.getElementById('water');
-  const controls = document.getElementById('controls');
-  const plusBtn = document.getElementById('plus');
-  const minusBtn = document.getElementById('minus');
-  const goalPopup = document.getElementById('goalPopup');
-  const goalAmountSpan = document.getElementById('goalAmount');
-  const closeGoalBtn = document.getElementById('closeGoal');
-
-  // Variabler
-  let waterAmountML = 0; // i ml
-  const maxWaterML = 4000; // max 4 liter
-  const stepML = 500; // per klick
-  let dailyGoal = 2000; // 2 liter default
-
-  // Uppdatera vattenhöjd i glaset
-  function updateWater() {
-    const percentage = Math.min(waterAmountML / maxWaterML * 100, 100);
-    water.style.height = percentage + '%';
-  }
-
-  // Visa eller göm kontroller
-  function toggleControls(show) {
-    if (show) {
-      controls.classList.add('visible');
-    } else {
-      controls.classList.remove('visible');
-    }
-  }
-
-  // Klick på glaset visar kontroller
-  glass.addEventListener('click', () => {
-    // Om goal-popup är öppen, stäng den först
-    if (goalPopup.style.display === 'block') {
-      goalPopup.style.display = 'none';
-      return;
-    }
-    const visible = controls.classList.contains('visible');
-    toggleControls(!visible);
-  });
-
-  // Dubbelt klick visar mål
-  glass.addEventListener('dblclick', (e) => {
-    e.stopPropagation();
-    toggleControls(false);
-    goalAmountSpan.textContent = dailyGoal / 1000;
-    goalPopup.style.display = 'block';
-  });
-
-  closeGoalBtn.addEventListener('click', () => {
-    goalPopup.style.display = 'none';
-  });
-
-  // Plus och minus knapp klick
-  plusBtn.addEventListener('click', () => {
-    waterAmountML = Math.min(waterAmountML + stepML, maxWaterML);
-    updateWater();
-  });
-
-  minusBtn.addEventListener('click', () => {
-    waterAmountML = Math.max(waterAmountML - stepML, 0);
-    updateWater();
-  });
-
-  // Init
-  updateWater();
-</script>
-
-</body>
-</html>
+<!-- Goal popup -->
+<div class="popup-bg" id="goalPopup">
+  <div class="popup-content">
+    <button class="close-btn" id="closeGoal">&times;</button>
+    <h2>Välj ditt mål</h2>
+    <input
