@@ -1,39 +1,95 @@
 <!DOCTYPE html>
 <html lang="sv">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Vattenmål App</title>
-  <link rel="manifest" href="manifest.json" />
-  <link rel="stylesheet" href="style.css" />
-  <link rel="apple-touch-icon" href="icon-192.png" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Watertracker</title>
+<style>
+  /* Grundinställningar */
+  body, html {
+    margin: 0; padding: 0;
+    height: 100%;
+    background: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    font-family: Arial, sans-serif;
+  }
+
+  /* Glaset */
+  .glass {
+    position: relative;
+    width: 150px;
+    height: 300px;
+    border: 5px solid #00aaff;
+    border-radius: 30px 30px 10px 10px;
+    background: rgba(255, 255, 255, 0.1);
+    overflow: hidden;
+    box-sizing: border-box;
+  }
+
+  /* Vatten i glaset */
+  .water {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 60%; /* vattennivån, ändra för progress */
+    background: linear-gradient(to top, #00aaff 0%, #00ddff 100%);
+    border-radius: 0 0 25px 25px;
+    transition: height 0.5s ease;
+  }
+
+  /* Progress bar längst ner */
+  .progress-container {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 15px;
+    background: #222;
+  }
+
+  .progress-bar {
+    height: 100%;
+    width: 60%; /* exempel progress */
+    background: #00aaff;
+    transition: width 0.5s ease;
+  }
+
+  /* Inställningsikon (kugghjul) */
+  .settings-icon {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    fill: #00aaff;
+    transition: fill 0.3s ease;
+  }
+
+  .settings-icon:hover {
+    fill: #00ddff;
+  }
+</style>
 </head>
 <body>
-  <div class="container">
-    <h1>Vattenmål för dagen</h1>
-    <label for="goalInput">Sätt ditt mål (ml):</label>
-    <input type="number" id="goalInput" min="0" placeholder="Ex. 2000" />
-    <button id="setGoalBtn">Sätt mål</button>
 
-    <h2>Hur mycket har du druckit?</h2>
-    <input type="number" id="intakeInput" min="0" placeholder="Ex. 250" />
-    <button id="addIntakeBtn">Lägg till</button>
+<div class="glass">
+  <div class="water"></div>
+</div>
 
-    <div class="progress-bar">
-      <div id="progressFill"></div>
-    </div>
-    <p id="statusText"></p>
+<!-- Progress bar -->
+<div class="progress-container">
+  <div class="progress-bar"></div>
+</div>
 
-    <h3>Inställningar</h3>
-    <label for="themeSelect">Tema:</label>
-    <select id="themeSelect">
-      <option value="light">Ljust</option>
-      <option value="dark">Mörkt</option>
-    </select>
-  </div>
+<!-- Inställningsikon SVG -->
+<svg class="settings-icon" viewBox="0 0 24 24">
+  <path d="M19.14 12.94c.04-.31.06-.63.06-.94s-.02-.63-.06-.94l2.03-1.58a.5.5 0 0 0 .12-.64l-1.92-3.32a.5.5 0 0 0-.6-.22l-2.39.96a7.025 7.025 0 0 0-1.6-.94l-.36-2.54a.5.5 0 0 0-.5-.43h-3.84a.5.5 0 0 0-.5.43l-.36 2.54a7.1 7.1 0 0 0-1.6.94l-2.39-.96a.5.5 0 0 0-.6.22L2.71 8.48a.5.5 0 0 0 .12.64l2.03 1.58c-.04.31-.06.63-.06.94s.02.63.06.94L2.83 14.5a.5.5 0 0 0-.12.64l1.92 3.32c.14.24.46.34.7.22l2.39-.96c.5.38 1.05.69 1.6.94l.36 2.54c.05.27.26.46.5.46h3.84c.24 0 .45-.19.5-.46l.36-2.54c.55-.25 1.1-.56 1.6-.94l2.39.96c.24.12.56.02.7-.22l1.92-3.32a.5.5 0 0 0-.12-.64l-2.03-1.58zM12 15.5A3.5 3.5 0 1 1 12 8.5a3.5 3.5 0 0 1 0 7z"/>
+</svg>
 
-  <script src="script.js"></script>
 </body>
 </html>
+
